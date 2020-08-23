@@ -21,14 +21,14 @@ RSpec.describe "show a shelter's pets page", type: :feature do
                         )
 
     @pet_2 = Pet.create!(
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTYGQvgRUI5BJBhAUOKgogNviW22ZX0qECUnA&usqp=CAU",
-      name: "Momo",
-      approximate_age: "18 weeks",
-      sex: "Female",
-      shelter_id: @shelter_1.id,
-      description: "Looking for my furever friend",
-      adoption_status: "Pending"
-    )
+                          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTYGQvgRUI5BJBhAUOKgogNviW22ZX0qECUnA&usqp=CAU",
+                          name: "Momo",
+                          approximate_age: "18 weeks",
+                          sex: "Female",
+                          shelter_id: @shelter_1.id,
+                          description: "Looking for my furever friend",
+                          adoption_status: "Pending"
+                        )
     
     visit "/pets/#{@pet_1.id}"
   end
@@ -52,11 +52,19 @@ RSpec.describe "show a shelter's pets page", type: :feature do
     expect(current_path).to eq("/pets")    
     expect(page).to_not have_content(@pet_1.name)
     # expectation above assumes that shelter names are unique
-    expect(page).to_not have_link("Delete Pet") 
   end
 
   it "can change adoption status" do 
-    expect(page).to have_have_link(href: "/pets/#{@pet_1.id}/pending")
-    expect(page).to have_have_link(href: "/pets/#{@pet_1.id}/adoptable")
+    visit "/pets/#{@pet_1.id}"
+    expect(page).to have_link(href: "/pets/#{@pet_1.id}/pending")
+    find("a[href='/pets/#{@pet_1.id}/pending']").click
+    @pet_1.adoption_status == "Pending"
+    expect(page).to have_link(href: "/pets/#{@pet_1.id}/adoptable")
+
+    visit "/pets/#{@pet_2.id}"
+    expect(page).to have_link(href: "/pets/#{@pet_2.id}/adoptable")
+    find("a[href='/pets/#{@pet_2.id}/pending']").click
+    @pet_2.adoption_status == "Adoptable"
+    expect(page).to have_link(href: "/pets/#{@pet_2.id}/pending")
   end
 end

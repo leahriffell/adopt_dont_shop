@@ -17,8 +17,18 @@ RSpec.describe "show a shelter's pets page", type: :feature do
                           sex: "Female",
                           shelter_id: @shelter_1.id,
                           description: "I am fluffy and so cute. I need someone to be my friend forever!!",
-                          adoption_status: "adoptable"
+                          adoption_status: "Adoptable"
                         )
+
+    @pet_2 = Pet.create!(
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTYGQvgRUI5BJBhAUOKgogNviW22ZX0qECUnA&usqp=CAU",
+      name: "Momo",
+      approximate_age: "18 weeks",
+      sex: "Female",
+      shelter_id: @shelter_1.id,
+      description: "Looking for my furever friend",
+      adoption_status: "Pending"
+    )
     
     visit "/pets/#{@pet_1.id}"
   end
@@ -43,5 +53,10 @@ RSpec.describe "show a shelter's pets page", type: :feature do
     expect(page).to_not have_content(@pet_1.name)
     # expectation above assumes that shelter names are unique
     expect(page).to_not have_link("Delete Pet") 
+  end
+
+  it "can change adoption status" do 
+    expect(page).to have_have_link(href: "/pets/#{@pet_1.id}/pending")
+    expect(page).to have_have_link(href: "/pets/#{@pet_1.id}/adoptable")
   end
 end
